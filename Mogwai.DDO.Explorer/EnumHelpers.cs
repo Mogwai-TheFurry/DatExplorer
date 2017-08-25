@@ -25,5 +25,21 @@ namespace Mogwai.DDO.Explorer
             else
                 return value.ToString();
         }
+
+        public static string GetFileExtension(Enum value)
+        {
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+
+            FileExtensionAttribute[] attributes =
+                (FileExtensionAttribute[])fi.GetCustomAttributes(
+                    typeof(FileExtensionAttribute),
+                    false);
+
+            if (attributes != null &&
+                attributes.Length > 0)
+                return attributes[0].FileExtension;
+            else
+                return value.ToString();
+        }
     }
 }

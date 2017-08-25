@@ -46,7 +46,9 @@
     <Compile Include="DatFile.cs" />
     <Compile Include="DatReader.cs" />
     <Compile Include="EnumHelpers.cs" />
+    <Compile Include="FileExtensionAttribute.cs" />
     <Compile Include="FileStreamExtensions.cs" />
+    <Compile Include="KnownFileType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

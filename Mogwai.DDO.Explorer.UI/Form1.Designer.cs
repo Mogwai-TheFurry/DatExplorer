@@ -53,24 +53,25 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.tbPreview = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.tbPreviewDecoded = new System.Windows.Forms.TextBox();
             this.lblPreview = new System.Windows.Forms.Label();
             this.cmsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.tbPreviewDecoded = new System.Windows.Forms.TextBox();
+            this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.cmsNode.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.cmsNode.SuspendLayout();
             this.SuspendLayout();
             // 
             // tvDatViewer
@@ -259,6 +260,7 @@
             this.tbPreview.Multiline = true;
             this.tbPreview.Name = "tbPreview";
             this.tbPreview.ReadOnly = true;
+            this.tbPreview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbPreview.Size = new System.Drawing.Size(301, 454);
             this.tbPreview.TabIndex = 3;
             // 
@@ -281,42 +283,6 @@
             this.splitContainer1.Size = new System.Drawing.Size(933, 454);
             this.splitContainer1.SplitterDistance = 320;
             this.splitContainer1.TabIndex = 4;
-            // 
-            // lblPreview
-            // 
-            this.lblPreview.AutoSize = true;
-            this.lblPreview.Location = new System.Drawing.Point(3, 10);
-            this.lblPreview.Name = "lblPreview";
-            this.lblPreview.Size = new System.Drawing.Size(0, 13);
-            this.lblPreview.TabIndex = 4;
-            // 
-            // cmsNode
-            // 
-            this.cmsNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.renameToolStripMenuItem,
-            this.previewToolStripMenuItem,
-            this.exportToolStripMenuItem});
-            this.cmsNode.Name = "cmsNode";
-            this.cmsNode.Size = new System.Drawing.Size(118, 70);
-            // 
-            // renameToolStripMenuItem
-            // 
-            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.renameToolStripMenuItem.Text = "&Rename";
-            // 
-            // previewToolStripMenuItem
-            // 
-            this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
-            this.previewToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.previewToolStripMenuItem.Text = "&Preview";
-            this.previewToolStripMenuItem.Click += new System.EventHandler(this.previewToolStripMenuItem_Click);
-            // 
-            // exportToolStripMenuItem
-            // 
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
-            this.exportToolStripMenuItem.Text = "&Export";
             // 
             // splitContainer2
             // 
@@ -343,8 +309,55 @@
             this.tbPreviewDecoded.Multiline = true;
             this.tbPreviewDecoded.Name = "tbPreviewDecoded";
             this.tbPreviewDecoded.ReadOnly = true;
+            this.tbPreviewDecoded.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbPreviewDecoded.Size = new System.Drawing.Size(304, 454);
             this.tbPreviewDecoded.TabIndex = 4;
+            // 
+            // lblPreview
+            // 
+            this.lblPreview.AutoSize = true;
+            this.lblPreview.Location = new System.Drawing.Point(3, 10);
+            this.lblPreview.Name = "lblPreview";
+            this.lblPreview.Size = new System.Drawing.Size(0, 13);
+            this.lblPreview.TabIndex = 4;
+            // 
+            // cmsNode
+            // 
+            this.cmsNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.renameToolStripMenuItem,
+            this.previewToolStripMenuItem,
+            this.exportToolStripMenuItem,
+            this.playToolStripMenuItem});
+            this.cmsNode.Name = "cmsNode";
+            this.cmsNode.Size = new System.Drawing.Size(153, 114);
+            this.cmsNode.Opening += new System.ComponentModel.CancelEventHandler(this.cmsNode_Opening);
+            // 
+            // renameToolStripMenuItem
+            // 
+            this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.renameToolStripMenuItem.Text = "&Rename";
+            // 
+            // previewToolStripMenuItem
+            // 
+            this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
+            this.previewToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.previewToolStripMenuItem.Text = "&Preview";
+            this.previewToolStripMenuItem.Click += new System.EventHandler(this.previewToolStripMenuItem_Click);
+            // 
+            // exportToolStripMenuItem
+            // 
+            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.exportToolStripMenuItem.Text = "&Export";
+            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
+            // 
+            // playToolStripMenuItem
+            // 
+            this.playToolStripMenuItem.Name = "playToolStripMenuItem";
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.playToolStripMenuItem.Text = "&Play";
+            this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -366,13 +379,13 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.cmsNode.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel1.PerformLayout();
             this.splitContainer2.Panel2.ResumeLayout(false);
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.cmsNode.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -411,6 +424,7 @@
         private System.Windows.Forms.Label lblPreview;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.TextBox tbPreviewDecoded;
+        private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
     }
 }
 

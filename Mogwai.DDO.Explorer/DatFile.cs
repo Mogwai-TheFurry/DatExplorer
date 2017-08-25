@@ -53,5 +53,29 @@ namespace Mogwai.DDO.Explorer
             else
                 return null;
         }
+
+        public static KnownFileType GetActualFileType(byte[] fileBuffer)
+        {
+            uint dword1 = BitConverter.ToUInt32(fileBuffer, 0);
+            uint dword2 = BitConverter.ToUInt32(fileBuffer, 4);
+            uint dword3 = BitConverter.ToUInt32(fileBuffer, 8);
+            uint dword4 = BitConverter.ToUInt32(fileBuffer, 12);
+
+            switch (dword1)
+            {
+                case 1179011410:
+                    // "RIFF"
+                    if (dword3 == 1163280727)
+                        return KnownFileType.Wave;
+                    break;
+                case 1399285583:
+                    // "OggS"
+                    if (dword2 == 512 && dword3 == 0)
+                        return KnownFileType.Ogg;
+                    break;
+            }
+
+            return KnownFileType.Unknown;
+        }
     }
 }

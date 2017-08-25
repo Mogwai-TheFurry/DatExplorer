@@ -85,12 +85,12 @@ namespace Mogwai.DDO.Explorer.UI
                     thisNode.Nodes.Add("Unknown 1: 0x" + df.Unknown1.ToString("X8"));
                     thisNode.Nodes.Add("Unknown 2: 0x" + df.Unknown2.ToString("X8"));
                     thisNode.ContextMenuStrip = cmsNode;
-                    
+
 
                     // TODO: implement sorting
                     parentNode.Nodes.Add(thisNode);
                     tsProgress.Value++;
-                    
+
                     tsProgress.Text = $"Creating tree structure... ({tsProgress.Value} of {_database.AllFiles.Count})";
                     // Application.DoEvents();
                 });
@@ -100,7 +100,7 @@ namespace Mogwai.DDO.Explorer.UI
                 this.Cursor = lastCursor;
             }
         }
-        
+
         private void Clear()
         {
             tvDatViewer.Nodes.Clear();
@@ -150,9 +150,18 @@ namespace Mogwai.DDO.Explorer.UI
             // Select the clicked node
             if (df != null)
             {
-                uint maxPreviewSize = 2048;
-                uint len = Math.Min(maxPreviewSize, Math.Max(df.Size1, df.Size2));
+                uint len = Math.Max(df.Size1, df.Size2);
                 var buffer = _database.GetData(df.FileOffset + 8, (int)len);
+
+                // in the file, the first dword is the file id
+                uint fileId = BitConverter.ToUInt32(buffer, 0);
+                if (fileId != df.FileId)
+                {
+                    MessageBox.Show("Unable to verify file.", "Dat Explorer", MessageBoxButtons.OK);
+                    return;
+                }
+
+                uint actualSize = BitConverter.ToUInt32(buffer, 4);
 
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine("File ID: " + df.FileId.ToString("X8"));
@@ -170,13 +179,14 @@ namespace Mogwai.DDO.Explorer.UI
                 sbAlt.AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine();
                 sbAlt.AppendLine();
 
-                for (int i = 0; i < len; i++)
+                for (int i = 0; i < actualSize; i++)
                 {
-                    sb.Append(buffer[i].ToString("X2"));
+                    byte thisByte = buffer[i + 8];
+                    sb.Append(thisByte.ToString("X2"));
                     char thisChar = '.';
 
-                    if (buffer[i] > 31)
-                        thisChar = Encoding.ASCII.GetString(buffer, i, 1)[0];
+                    if (thisByte > 31)
+                        thisChar = Encoding.ASCII.GetString(buffer, i + 8, 1)[0];
 
                     sbAlt.Append(thisChar);
 
@@ -201,6 +211,103 @@ namespace Mogwai.DDO.Explorer.UI
         private void tvDatViewer_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             ((TreeView)sender).SelectedNode = e.Node;
+        }
+
+        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var menuItem = sender as ToolStripMenuItem;
+            var source = (menuItem.Owner as ContextMenuStrip).SourceControl as TreeView;
+
+            DatFile df = source?.SelectedNode?.Tag as DatFile;
+
+            // Select the clicked node
+            if (df != null)
+            {
+                var fileHeader = _database.GetData(df.FileOffset + 8, 8);
+                uint fileId = BitConverter.ToUInt32(fileHeader, 0);
+
+                // in the file, the first dword is the file id
+                if (fileId != df.FileId)
+                {
+                    MessageBox.Show("Unable to verify file.", "Dat Explorer", MessageBoxButtons.OK);
+                    return;
+                }
+
+                uint actualSize = BitConverter.ToUInt32(fileHeader, 4);
+                var buffer = _database.GetData(df.FileOffset + 16, (int)actualSize);
+                string extension = "bin";
+                var knownType = DatFile.GetActualFileType(buffer);
+
+                if (knownType != KnownFileType.Unknown)
+                    extension = EnumHelpers.GetFileExtension(knownType);
+
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.FileName = df.UserDefinedName ?? df.FileId.ToString("X8") + "." + extension;
+                var save = sfd.ShowDialog(this);
+
+                if (save == DialogResult.OK)
+                    File.WriteAllBytes(sfd.FileName, buffer);
+            }
+
+        }
+
+        private void cmsNode_Opening(object sender, CancelEventArgs e)
+        {
+            playToolStripMenuItem.Visible = false;
+
+            return;
+
+            // to be implemented later
+
+            var source = (sender as ContextMenuStrip).SourceControl as TreeView;
+
+            DatFile df = source?.SelectedNode?.Tag as DatFile;
+
+            // Select the clicked node
+            if (df != null)
+            {
+                var buffer = _database.GetData(df.FileOffset + 16, 16);
+                var knownType = DatFile.GetActualFileType(buffer);
+
+                switch (knownType)
+                {
+                    case KnownFileType.Ogg:
+                    case KnownFileType.Wave:
+                        playToolStripMenuItem.Visible = true;
+                        break;
+                }
+
+            }
+
+        }
+
+        private void playToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var menuItem = sender as ToolStripMenuItem;
+            var source = (menuItem.Owner as ContextMenuStrip).SourceControl as TreeView;
+
+            DatFile df = source?.SelectedNode?.Tag as DatFile;
+
+            // Select the clicked node
+            if (df != null)
+            {
+                var buffer = _database.GetData(df.FileOffset + 16, 16);
+                var knownType = DatFile.GetActualFileType(buffer);
+
+                var fileHeader = _database.GetData(df.FileOffset + 8, 8);
+                uint actualSize = BitConverter.ToUInt32(fileHeader, 4);
+                buffer = _database.GetData(df.FileOffset + 16, (int)actualSize);
+
+                switch (knownType)
+                {
+                    case KnownFileType.Ogg:
+                        var f = new NVorbis.Ogg.ContainerReader(new MemoryStream(buffer), true);
+                        
+                        break;
+                    case KnownFileType.Wave:
+                        break;
+                }
+            }
         }
     }
 }
