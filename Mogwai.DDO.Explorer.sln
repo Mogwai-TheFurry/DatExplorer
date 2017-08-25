@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mogwai.DDO.Explorer", "Mogwai.DDO.Explorer\Mogwai.DDO.Explorer.csproj", "{DA5CB9F1-1FA9-4324-A39D-DC8F7D18B5C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mogwai.DDO.Explorer.Tests", "Mogwai.DDO.Explorer.Tests\Mogwai.DDO.Explorer.Tests.csproj", "{2986FAFE-8A00-4833-86E9-44D2313E07D5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mogwai.DDO.Explorer.UI", "Mogwai.DDO.Explorer.UI\Mogwai.DDO.Explorer.UI.csproj", "{06C3D233-8F98-454F-90D6-1C75A118D184}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA5CB9F1-1FA9-4324-A39D-DC8F7D18B5C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA5CB9F1-1FA9-4324-A39D-DC8F7D18B5C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA5CB9F1-1FA9-4324-A39D-DC8F7D18B5C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA5CB9F1-1FA9-4324-A39D-DC8F7D18B5C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2986FAFE-8A00-4833-86E9-44D2313E07D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2986FAFE-8A00-4833-86E9-44D2313E07D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2986FAFE-8A00-4833-86E9-44D2313E07D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2986FAFE-8A00-4833-86E9-44D2313E07D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06C3D233-8F98-454F-90D6-1C75A118D184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C3D233-8F98-454F-90D6-1C75A118D184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C3D233-8F98-454F-90D6-1C75A118D184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C3D233-8F98-454F-90D6-1C75A118D184}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
