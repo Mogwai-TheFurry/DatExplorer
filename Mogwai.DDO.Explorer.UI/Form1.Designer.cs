@@ -51,10 +51,15 @@
             this.autoDecompressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoDetectContentTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.tbPreview = new System.Windows.Forms.TextBox();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.tbPreviewDecoded = new System.Windows.Forms.TextBox();
+            this.tbInfo = new System.Windows.Forms.TextBox();
+            this.tcPreview = new System.Windows.Forms.TabControl();
+            this.tpRaw = new System.Windows.Forms.TabPage();
+            this.tbRaw = new System.Windows.Forms.TextBox();
+            this.tpAscii = new System.Windows.Forms.TabPage();
+            this.tbAscii = new System.Windows.Forms.TextBox();
+            this.tpImage = new System.Windows.Forms.TabPage();
+            this.pbPreview = new System.Windows.Forms.PictureBox();
             this.lblPreview = new System.Windows.Forms.Label();
             this.cmsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,10 +72,11 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
+            this.tcPreview.SuspendLayout();
+            this.tpRaw.SuspendLayout();
+            this.tpAscii.SuspendLayout();
+            this.tpImage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbPreview)).BeginInit();
             this.cmsNode.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -80,7 +86,7 @@
             this.tvDatViewer.HideSelection = false;
             this.tvDatViewer.Location = new System.Drawing.Point(0, 0);
             this.tvDatViewer.Name = "tvDatViewer";
-            this.tvDatViewer.Size = new System.Drawing.Size(320, 454);
+            this.tvDatViewer.Size = new System.Drawing.Size(269, 616);
             this.tvDatViewer.TabIndex = 0;
             this.tvDatViewer.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvDatViewer_NodeMouseClick);
             // 
@@ -88,9 +94,9 @@
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsProgress});
-            this.statusStrip.Location = new System.Drawing.Point(0, 484);
+            this.statusStrip.Location = new System.Drawing.Point(0, 646);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(933, 22);
+            this.statusStrip.Size = new System.Drawing.Size(810, 22);
             this.statusStrip.TabIndex = 1;
             this.statusStrip.Text = "statusStrip1";
             // 
@@ -110,7 +116,7 @@
             this.optionsToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(933, 24);
+            this.mainMenu.Size = new System.Drawing.Size(810, 24);
             this.mainMenu.TabIndex = 2;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -141,8 +147,9 @@
             this.toolStripMenuItem2,
             this.toolStripMenuItem3,
             this.toolStripMenuItem4});
+            this.tsmiRecent.Enabled = false;
             this.tsmiRecent.Name = "tsmiRecent";
-            this.tsmiRecent.Size = new System.Drawing.Size(146, 22);
+            this.tsmiRecent.Size = new System.Drawing.Size(152, 22);
             this.tsmiRecent.Text = "&Recent";
             // 
             // tsmiRecent1
@@ -178,8 +185,9 @@
             // tsmiExit
             // 
             this.tsmiExit.Name = "tsmiExit";
-            this.tsmiExit.Size = new System.Drawing.Size(146, 22);
+            this.tsmiExit.Size = new System.Drawing.Size(152, 22);
             this.tsmiExit.Text = "E&xit";
+            this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
             // 
             // searchToolStripMenuItem
             // 
@@ -188,6 +196,7 @@
             this.byFileIdToolStripMenuItem,
             this.byTypeToolStripMenuItem,
             this.byInternalTypeToolStripMenuItem});
+            this.searchToolStripMenuItem.Enabled = false;
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
             this.searchToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.searchToolStripMenuItem.Text = "Search";
@@ -252,18 +261,6 @@
             this.openFileDialog.Title = "Select a dat file";
             this.openFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog_FileOk);
             // 
-            // tbPreview
-            // 
-            this.tbPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbPreview.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbPreview.Location = new System.Drawing.Point(0, 0);
-            this.tbPreview.Multiline = true;
-            this.tbPreview.Name = "tbPreview";
-            this.tbPreview.ReadOnly = true;
-            this.tbPreview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbPreview.Size = new System.Drawing.Size(301, 454);
-            this.tbPreview.TabIndex = 3;
-            // 
             // splitContainer1
             // 
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -278,40 +275,100 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Panel2.Controls.Add(this.tbInfo);
+            this.splitContainer1.Panel2.Controls.Add(this.tcPreview);
             this.splitContainer1.Panel2.Controls.Add(this.lblPreview);
-            this.splitContainer1.Size = new System.Drawing.Size(933, 454);
-            this.splitContainer1.SplitterDistance = 320;
+            this.splitContainer1.Size = new System.Drawing.Size(810, 616);
+            this.splitContainer1.SplitterDistance = 269;
             this.splitContainer1.TabIndex = 4;
             // 
-            // splitContainer2
+            // tbInfo
             // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
+            this.tbInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbInfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbInfo.Location = new System.Drawing.Point(6, 3);
+            this.tbInfo.Multiline = true;
+            this.tbInfo.Name = "tbInfo";
+            this.tbInfo.ReadOnly = true;
+            this.tbInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbInfo.Size = new System.Drawing.Size(528, 164);
+            this.tbInfo.TabIndex = 7;
             // 
-            // splitContainer2.Panel1
+            // tcPreview
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.tbPreview);
+            this.tcPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tcPreview.Controls.Add(this.tpRaw);
+            this.tcPreview.Controls.Add(this.tpAscii);
+            this.tcPreview.Controls.Add(this.tpImage);
+            this.tcPreview.Location = new System.Drawing.Point(2, 173);
+            this.tcPreview.Name = "tcPreview";
+            this.tcPreview.SelectedIndex = 0;
+            this.tcPreview.Size = new System.Drawing.Size(532, 440);
+            this.tcPreview.TabIndex = 5;
             // 
-            // splitContainer2.Panel2
+            // tpRaw
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.tbPreviewDecoded);
-            this.splitContainer2.Size = new System.Drawing.Size(609, 454);
-            this.splitContainer2.SplitterDistance = 301;
-            this.splitContainer2.TabIndex = 5;
+            this.tpRaw.Controls.Add(this.tbRaw);
+            this.tpRaw.Location = new System.Drawing.Point(4, 22);
+            this.tpRaw.Name = "tpRaw";
+            this.tpRaw.Size = new System.Drawing.Size(524, 414);
+            this.tpRaw.TabIndex = 1;
+            this.tpRaw.Text = "Raw Data";
             // 
-            // tbPreviewDecoded
+            // tbRaw
             // 
-            this.tbPreviewDecoded.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbPreviewDecoded.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbPreviewDecoded.Location = new System.Drawing.Point(0, 0);
-            this.tbPreviewDecoded.Multiline = true;
-            this.tbPreviewDecoded.Name = "tbPreviewDecoded";
-            this.tbPreviewDecoded.ReadOnly = true;
-            this.tbPreviewDecoded.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbPreviewDecoded.Size = new System.Drawing.Size(304, 454);
-            this.tbPreviewDecoded.TabIndex = 4;
+            this.tbRaw.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbRaw.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbRaw.Location = new System.Drawing.Point(0, 0);
+            this.tbRaw.Multiline = true;
+            this.tbRaw.Name = "tbRaw";
+            this.tbRaw.ReadOnly = true;
+            this.tbRaw.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbRaw.Size = new System.Drawing.Size(524, 414);
+            this.tbRaw.TabIndex = 5;
+            // 
+            // tpAscii
+            // 
+            this.tpAscii.Controls.Add(this.tbAscii);
+            this.tpAscii.Location = new System.Drawing.Point(4, 22);
+            this.tpAscii.Name = "tpAscii";
+            this.tpAscii.Size = new System.Drawing.Size(524, 414);
+            this.tpAscii.TabIndex = 3;
+            this.tpAscii.Text = "Ascii Content";
+            // 
+            // tbAscii
+            // 
+            this.tbAscii.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbAscii.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbAscii.Location = new System.Drawing.Point(0, 0);
+            this.tbAscii.Multiline = true;
+            this.tbAscii.Name = "tbAscii";
+            this.tbAscii.ReadOnly = true;
+            this.tbAscii.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.tbAscii.Size = new System.Drawing.Size(524, 414);
+            this.tbAscii.TabIndex = 7;
+            // 
+            // tpImage
+            // 
+            this.tpImage.Controls.Add(this.pbPreview);
+            this.tpImage.Location = new System.Drawing.Point(4, 22);
+            this.tpImage.Name = "tpImage";
+            this.tpImage.Size = new System.Drawing.Size(524, 414);
+            this.tpImage.TabIndex = 4;
+            this.tpImage.Text = "Image Content (coming soon)";
+            this.tpImage.UseVisualStyleBackColor = true;
+            // 
+            // pbPreview
+            // 
+            this.pbPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbPreview.Location = new System.Drawing.Point(0, 0);
+            this.pbPreview.Name = "pbPreview";
+            this.pbPreview.Size = new System.Drawing.Size(524, 414);
+            this.pbPreview.TabIndex = 0;
+            this.pbPreview.TabStop = false;
             // 
             // lblPreview
             // 
@@ -329,7 +386,7 @@
             this.exportToolStripMenuItem,
             this.playToolStripMenuItem});
             this.cmsNode.Name = "cmsNode";
-            this.cmsNode.Size = new System.Drawing.Size(153, 114);
+            this.cmsNode.Size = new System.Drawing.Size(118, 92);
             this.cmsNode.Opening += new System.ComponentModel.CancelEventHandler(this.cmsNode_Opening);
             // 
             // renameToolStripMenuItem
@@ -355,7 +412,7 @@
             // playToolStripMenuItem
             // 
             this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.playToolStripMenuItem.Text = "&Play";
             this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
             // 
@@ -363,13 +420,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(933, 506);
+            this.ClientSize = new System.Drawing.Size(810, 668);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.mainMenu);
             this.MainMenuStrip = this.mainMenu;
             this.Name = "Form1";
             this.Text = "Dat Explorer";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.mainMenu.ResumeLayout(false);
@@ -379,12 +437,13 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel1.PerformLayout();
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            this.splitContainer2.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
+            this.tcPreview.ResumeLayout(false);
+            this.tpRaw.ResumeLayout(false);
+            this.tpRaw.PerformLayout();
+            this.tpAscii.ResumeLayout(false);
+            this.tpAscii.PerformLayout();
+            this.tpImage.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbPreview)).EndInit();
             this.cmsNode.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -415,16 +474,21 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
         private System.Windows.Forms.ToolStripProgressBar tsProgress;
-        private System.Windows.Forms.TextBox tbPreview;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ContextMenuStrip cmsNode;
         private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.Label lblPreview;
-        private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.TextBox tbPreviewDecoded;
         private System.Windows.Forms.ToolStripMenuItem playToolStripMenuItem;
+        private System.Windows.Forms.TabControl tcPreview;
+        private System.Windows.Forms.TabPage tpRaw;
+        private System.Windows.Forms.TextBox tbRaw;
+        private System.Windows.Forms.TabPage tpAscii;
+        private System.Windows.Forms.TextBox tbAscii;
+        private System.Windows.Forms.TabPage tpImage;
+        private System.Windows.Forms.PictureBox pbPreview;
+        private System.Windows.Forms.TextBox tbInfo;
     }
 }
 

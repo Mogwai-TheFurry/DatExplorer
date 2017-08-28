@@ -36,6 +36,11 @@ namespace Mogwai.DDO.Explorer
 
         public string UserDefinedName { get; set; }
 
+        public CompressionType CompressionLevel
+        {
+            get { return (CompressionType)(FileType & 0x00FF); }
+        }
+
         public static DatFile FromDirectoryBuffer(byte[] buffer, int index)
         {
             DatFile df = new DatFile();
@@ -57,10 +62,11 @@ namespace Mogwai.DDO.Explorer
         public static KnownFileType GetActualFileType(byte[] fileBuffer)
         {
             uint dword1 = BitConverter.ToUInt32(fileBuffer, 0);
+            ushort word1 = BitConverter.ToUInt16(fileBuffer, 0);
             uint dword2 = BitConverter.ToUInt32(fileBuffer, 4);
             uint dword3 = BitConverter.ToUInt32(fileBuffer, 8);
             uint dword4 = BitConverter.ToUInt32(fileBuffer, 12);
-
+            
             switch (dword1)
             {
                 case 1179011410:
@@ -73,6 +79,19 @@ namespace Mogwai.DDO.Explorer
                     if (dword2 == 512 && dword3 == 0)
                         return KnownFileType.Ogg;
                     break;
+                case 827611204:
+                    return KnownFileType.DXT1;
+                case 827611206:
+                    return KnownFileType.DXT3;
+                case 827611208:
+                    return KnownFileType.DXT5;
+            }
+            
+            switch(word1)
+            {
+                case 30876:
+                case 30874:
+                    return KnownFileType.Zlib;
             }
 
             return KnownFileType.Unknown;

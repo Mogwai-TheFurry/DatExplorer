@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -146,65 +147,128 @@ namespace Mogwai.DDO.Explorer.UI
             var source = (menuItem.Owner as ContextMenuStrip).SourceControl as TreeView;
 
             DatFile df = source?.SelectedNode?.Tag as DatFile;
+            tbInfo.Text = null;
+            tbRaw.Text = null;
+            tbAscii.Text = null;
 
             // Select the clicked node
             if (df != null)
             {
-                uint len = Math.Max(df.Size1, df.Size2);
-                var buffer = _database.GetData(df.FileOffset + 8, (int)len);
+                StringBuilder sbInfo = new StringBuilder();
+                StringBuilder sbRaw = new StringBuilder();
+                StringBuilder sbAscii = new StringBuilder();
+                StringBuilder sbDecomp = new StringBuilder();
+                string contentDescription = null;
+                
+                byte[] actualContent = null;
+                byte[] header = null;
 
-                // in the file, the first dword is the file id
-                uint fileId = BitConverter.ToUInt32(buffer, 0);
-                if (fileId != df.FileId)
+                if (df.CompressionLevel == CompressionType.Default || df.CompressionLevel == CompressionType.Maximum)
                 {
-                    MessageBox.Show("Unable to verify file.", "Dat Explorer", MessageBoxButtons.OK);
-                    return;
+                    header = _database.GetData(df.FileOffset + 8, 4);
+                    var compressed = _database.GetData(df.FileOffset + 12, (int)df.Size1);
+                    actualContent = Ionic.Zlib.ZlibStream.UncompressBuffer(compressed);
+
+                    // header = actualContent.Take(8).ToArray();
+                    var compressionRatio = 100 * (decimal)compressed.Length / (decimal)actualContent.Length;
+                    contentDescription = $"Content was compressed by {compressionRatio:#} percent.  Viewing decompressed content.";
+                }
+                else
+                {
+                    header = _database.GetData(df.FileOffset + 8, 8);
+                    actualContent = _database.GetData(df.FileOffset + 16, (int)df.Size1);
                 }
 
-                uint actualSize = BitConverter.ToUInt32(buffer, 4);
+                sbInfo.AppendLine("File ID: " + df.FileId.ToString("X8"));
+                sbInfo.AppendLine("Offset: 0x" + df.FileOffset.ToString("X"));
+                sbInfo.AppendLine("File Date: " + df.FileDate);
+                sbInfo.AppendLine("Version: " + df.Version);
+                sbInfo.AppendLine("Compression: " + df.CompressionLevel.ToString());
+                sbInfo.AppendLine("File Size: " + df.Size1);
+                sbInfo.AppendLine("Dat Space Consumed: " + df.Size2);
+                sbInfo.AppendLine("Type: 0x" + df.FileType.ToString("X8"));
+                sbInfo.AppendLine("Unknown 1: 0x" + df.Unknown1.ToString("X8"));
+                sbInfo.AppendLine("Unknown 2: 0x" + df.Unknown2.ToString("X8"));
 
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("File ID: " + df.FileId.ToString("X8"));
-                sb.AppendLine("Offset: 0x" + df.FileOffset.ToString("X"));
-                sb.AppendLine("File Date: " + df.FileDate);
-                sb.AppendLine("Version: " + df.Version);
-                sb.AppendLine("Size 1: " + df.Size1);
-                sb.AppendLine("Size 2: " + df.Size2);
-                sb.AppendLine("Type: 0x" + df.FileType.ToString("X8"));
-                sb.AppendLine("Unknown 1: 0x" + df.Unknown1.ToString("X8"));
-                sb.AppendLine("Unknown 2: 0x" + df.Unknown2.ToString("X8"));
-                sb.AppendLine();
+                var fileType = DatFile.GetActualFileType(actualContent);
 
-                StringBuilder sbAlt = new StringBuilder();
-                sbAlt.AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine().AppendLine();
-                sbAlt.AppendLine();
-
-                for (int i = 0; i < actualSize; i++)
+                switch (fileType)
                 {
-                    byte thisByte = buffer[i + 8];
-                    sb.Append(thisByte.ToString("X2"));
+                    case KnownFileType.DXT1:
+                    case KnownFileType.DXT3:
+                    case KnownFileType.DXT5:
+                        sbInfo.AppendLine("Image Content Detected.");
+                        break;
+                }
+
+                if (!string.IsNullOrWhiteSpace(contentDescription))
+                    sbRaw.AppendLine(contentDescription).AppendLine();
+                
+                sbRaw.AppendLine($"Header ({header.Length} bytes)");
+                for (int i = 0; i < header.Length; i++)
+                {
+                    sbRaw.Append(header[i].ToString("X2"));
+
+                    if ((i + 1) % 4 == 0)
+                        sbRaw.Append(" ");
+
+                    if ((i + 1) % 16 == 0)
+                        sbRaw.AppendLine();
+                }
+
+                sbRaw.AppendLine().AppendLine();
+                sbRaw.AppendLine($"Content ({actualContent.Length} bytes)");
+                for (int i = 0; i < actualContent.Length; i++)
+                {
+                    sbRaw.Append(actualContent[i].ToString("X2"));
+
+                    if ((i + 1) % 4 == 0)
+                        sbRaw.Append(" ");
+
+                    if ((i + 1) % 16 == 0)
+                        sbRaw.AppendLine();
+                }
+
+                sbAscii.AppendLine($"Header ({header.Length} bytes)");
+                for (int i = 0; i < header.Length; i++)
+                {
+                    byte thisByte = header[i];
                     char thisChar = '.';
 
                     if (thisByte > 31)
-                        thisChar = Encoding.ASCII.GetString(buffer, i + 8, 1)[0];
+                        thisChar = Encoding.ASCII.GetString(header, i, 1)[0];
 
-                    sbAlt.Append(thisChar);
+                    sbAscii.Append(thisChar);
 
                     if ((i + 1) % 4 == 0)
-                    {
-                        sb.Append(" ");
-                        sbAlt.Append(" ");
-                    }
+                        sbAscii.Append(" ");
 
                     if ((i + 1) % 16 == 0)
-                    {
-                        sb.AppendLine();
-                        sbAlt.AppendLine();
-                    }
+                        sbAscii.AppendLine();
                 }
 
-                tbPreview.Text = sb.ToString();
-                tbPreviewDecoded.Text = sbAlt.ToString();
+                sbAscii.AppendLine().AppendLine();
+                sbAscii.AppendLine($"Content ({actualContent.Length} bytes)");
+                for (int i = 0; i < actualContent.Length; i++)
+                {
+                    byte thisByte = actualContent[i];
+                    char thisChar = '.';
+
+                    if (thisByte > 31)
+                        thisChar = Encoding.ASCII.GetString(actualContent, i, 1)[0];
+
+                    sbAscii.Append(thisChar);
+
+                    if ((i + 1) % 4 == 0)
+                        sbAscii.Append(" ");
+
+                    if ((i + 1) % 16 == 0)
+                        sbAscii.AppendLine();
+                }
+                
+                tbInfo.Text = sbInfo.ToString();
+                tbRaw.Text = sbRaw.ToString();
+                tbAscii.Text = sbAscii.ToString();
             }
         }
 
@@ -223,20 +287,23 @@ namespace Mogwai.DDO.Explorer.UI
             // Select the clicked node
             if (df != null)
             {
-                var fileHeader = _database.GetData(df.FileOffset + 8, 8);
-                uint fileId = BitConverter.ToUInt32(fileHeader, 0);
+                byte[] actualContent = null;
+                byte[] header = null;
 
-                // in the file, the first dword is the file id
-                if (fileId != df.FileId)
+                if (df.CompressionLevel == CompressionType.Default || df.CompressionLevel == CompressionType.Maximum)
                 {
-                    MessageBox.Show("Unable to verify file.", "Dat Explorer", MessageBoxButtons.OK);
-                    return;
+                    header = _database.GetData(df.FileOffset + 8, 4);
+                    var compressed = _database.GetData(df.FileOffset + 12, (int)df.Size1);
+                    actualContent = Ionic.Zlib.ZlibStream.UncompressBuffer(compressed);
+                }
+                else
+                {
+                    header = _database.GetData(df.FileOffset + 8, 8);
+                    actualContent = _database.GetData(df.FileOffset + 16, (int)df.Size1);
                 }
 
-                uint actualSize = BitConverter.ToUInt32(fileHeader, 4);
-                var buffer = _database.GetData(df.FileOffset + 16, (int)actualSize);
                 string extension = "bin";
-                var knownType = DatFile.GetActualFileType(buffer);
+                var knownType = DatFile.GetActualFileType(actualContent);
 
                 if (knownType != KnownFileType.Unknown)
                     extension = EnumHelpers.GetFileExtension(knownType);
@@ -246,7 +313,7 @@ namespace Mogwai.DDO.Explorer.UI
                 var save = sfd.ShowDialog(this);
 
                 if (save == DialogResult.OK)
-                    File.WriteAllBytes(sfd.FileName, buffer);
+                    File.WriteAllBytes(sfd.FileName, actualContent);
             }
 
         }
@@ -301,13 +368,22 @@ namespace Mogwai.DDO.Explorer.UI
                 switch (knownType)
                 {
                     case KnownFileType.Ogg:
-                        var f = new NVorbis.Ogg.ContainerReader(new MemoryStream(buffer), true);
                         
                         break;
                     case KnownFileType.Wave:
                         break;
                 }
             }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tsmiExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

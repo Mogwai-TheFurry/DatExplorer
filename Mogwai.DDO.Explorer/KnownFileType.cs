@@ -14,6 +14,18 @@ namespace Mogwai.DDO.Explorer
         Ogg,
 
         [FileExtension("wav")]
-        Wave
+        Wave,
+
+        [FileExtension("zlib")]
+        Zlib,
+
+        [FileExtension("dxt1")]
+        DXT1,
+
+        [FileExtension("dxt3")]
+        DXT3,
+
+        [FileExtension("dxt5")]
+        DXT5
     }
 }
