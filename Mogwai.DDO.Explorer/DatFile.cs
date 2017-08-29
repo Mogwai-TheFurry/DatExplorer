@@ -65,8 +65,9 @@ namespace Mogwai.DDO.Explorer
             ushort word1 = BitConverter.ToUInt16(fileBuffer, 0);
             uint dword2 = BitConverter.ToUInt32(fileBuffer, 4);
             uint dword3 = BitConverter.ToUInt32(fileBuffer, 8);
-            uint dword4 = BitConverter.ToUInt32(fileBuffer, 12);
-            
+            // uint dword4 = BitConverter.ToUInt32(fileBuffer, 12);
+            // uint dword5 = BitConverter.ToUInt32(fileBuffer, 16);
+
             switch (dword1)
             {
                 case 1179011410:
@@ -86,6 +87,16 @@ namespace Mogwai.DDO.Explorer
                 case 827611208:
                     return KnownFileType.DXT5;
             }
+
+            switch(dword3)
+            {
+                case 827611204:
+                    return KnownFileType.DXT1;
+                case 861165636:
+                    return KnownFileType.DXT3;
+                case 894720068:
+                    return KnownFileType.DXT5;
+            }
             
             switch(word1)
             {
@@ -95,6 +106,26 @@ namespace Mogwai.DDO.Explorer
             }
 
             return KnownFileType.Unknown;
+        }
+
+        public static byte[] CreateBitmap(KnownFileType fileType, byte[] data, int width, int height)
+        {
+            byte[] result = null;
+
+            switch(fileType)
+            {
+                case KnownFileType.DXT1:
+                    result = DxtUtil.DecompressDxt1(data, width, height);
+                    break;
+                case KnownFileType.DXT3:
+                    result = DxtUtil.DecompressDxt3(data, width, height);
+                    break;
+                case KnownFileType.DXT5:
+                    result = DxtUtil.DecompressDxt5(data, width, height);
+                    break;
+            }
+
+            return result;
         }
     }
 }

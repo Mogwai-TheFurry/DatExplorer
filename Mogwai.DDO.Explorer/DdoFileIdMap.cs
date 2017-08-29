@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Mogwai.DDO.Explorer
 {
-    public enum CompressionType
+    public enum DdoFileIdMap
     {
-        Uncompressed = 0,
-        Maximum = 1,
-        Unknown_Value_2 = 2,
-        Default = 3
+        [FileIdRange(0x0A000000, 0x0AFFFFFF)]
+        AudioFiles
     }
 }

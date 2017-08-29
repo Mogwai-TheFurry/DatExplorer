@@ -47,6 +47,12 @@
             this.byFileIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.byInternalTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.byCompressionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.allCompressionTypes = new System.Windows.Forms.ToolStripMenuItem();
+            this.noCompression = new System.Windows.Forms.ToolStripMenuItem();
+            this.maximumCompression = new System.Windows.Forms.ToolStripMenuItem();
+            this.unknownCompression = new System.Windows.Forms.ToolStripMenuItem();
+            this.defaultCompression = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoDecompressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoDetectContentTypeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +65,9 @@
             this.tpAscii = new System.Windows.Forms.TabPage();
             this.tbAscii = new System.Windows.Forms.TextBox();
             this.tpImage = new System.Windows.Forms.TabPage();
-            this.pbPreview = new System.Windows.Forms.PictureBox();
+            this.pbPreview = new Mogwai.DDO.Explorer.UI.ZoomBox();
+            this.cmsSavePreview = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblPreview = new System.Windows.Forms.Label();
             this.cmsNode = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,6 +85,7 @@
             this.tpAscii.SuspendLayout();
             this.tpImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbPreview)).BeginInit();
+            this.cmsSavePreview.SuspendLayout();
             this.cmsNode.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -86,7 +95,7 @@
             this.tvDatViewer.HideSelection = false;
             this.tvDatViewer.Location = new System.Drawing.Point(0, 0);
             this.tvDatViewer.Name = "tvDatViewer";
-            this.tvDatViewer.Size = new System.Drawing.Size(269, 616);
+            this.tvDatViewer.Size = new System.Drawing.Size(240, 616);
             this.tvDatViewer.TabIndex = 0;
             this.tvDatViewer.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.tvDatViewer_NodeMouseClick);
             // 
@@ -149,7 +158,7 @@
             this.toolStripMenuItem4});
             this.tsmiRecent.Enabled = false;
             this.tsmiRecent.Name = "tsmiRecent";
-            this.tsmiRecent.Size = new System.Drawing.Size(152, 22);
+            this.tsmiRecent.Size = new System.Drawing.Size(146, 22);
             this.tsmiRecent.Text = "&Recent";
             // 
             // tsmiRecent1
@@ -185,7 +194,7 @@
             // tsmiExit
             // 
             this.tsmiExit.Name = "tsmiExit";
-            this.tsmiExit.Size = new System.Drawing.Size(152, 22);
+            this.tsmiExit.Size = new System.Drawing.Size(146, 22);
             this.tsmiExit.Text = "E&xit";
             this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
             // 
@@ -195,8 +204,8 @@
             this.byDateToolStripMenuItem,
             this.byFileIdToolStripMenuItem,
             this.byTypeToolStripMenuItem,
-            this.byInternalTypeToolStripMenuItem});
-            this.searchToolStripMenuItem.Enabled = false;
+            this.byInternalTypeToolStripMenuItem,
+            this.byCompressionToolStripMenuItem});
             this.searchToolStripMenuItem.Name = "searchToolStripMenuItem";
             this.searchToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.searchToolStripMenuItem.Text = "Search";
@@ -228,6 +237,55 @@
             this.byInternalTypeToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
             this.byInternalTypeToolStripMenuItem.Text = "By Internal Type";
             this.byInternalTypeToolStripMenuItem.Click += new System.EventHandler(this.byInternalTypeToolStripMenuItem_Click);
+            // 
+            // byCompressionToolStripMenuItem
+            // 
+            this.byCompressionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.allCompressionTypes,
+            this.noCompression,
+            this.maximumCompression,
+            this.unknownCompression,
+            this.defaultCompression});
+            this.byCompressionToolStripMenuItem.Name = "byCompressionToolStripMenuItem";
+            this.byCompressionToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+            this.byCompressionToolStripMenuItem.Text = "By Compression";
+            // 
+            // allCompressionTypes
+            // 
+            this.allCompressionTypes.Checked = true;
+            this.allCompressionTypes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.allCompressionTypes.Name = "allCompressionTypes";
+            this.allCompressionTypes.Size = new System.Drawing.Size(162, 22);
+            this.allCompressionTypes.Text = "Show &All";
+            this.allCompressionTypes.Click += new System.EventHandler(this.showAllToolStripMenuItem_Click);
+            // 
+            // noCompression
+            // 
+            this.noCompression.Name = "noCompression";
+            this.noCompression.Size = new System.Drawing.Size(162, 22);
+            this.noCompression.Text = "&0 Uncompressed";
+            this.noCompression.Click += new System.EventHandler(this.uncompressedToolStripMenuItem_Click);
+            // 
+            // maximumCompression
+            // 
+            this.maximumCompression.Name = "maximumCompression";
+            this.maximumCompression.Size = new System.Drawing.Size(162, 22);
+            this.maximumCompression.Text = "&1 Maximum";
+            this.maximumCompression.Click += new System.EventHandler(this.maximumCompression_Click);
+            // 
+            // unknownCompression
+            // 
+            this.unknownCompression.Name = "unknownCompression";
+            this.unknownCompression.Size = new System.Drawing.Size(162, 22);
+            this.unknownCompression.Text = "&2 Unknown";
+            this.unknownCompression.Click += new System.EventHandler(this.unknownCompression_Click);
+            // 
+            // defaultCompression
+            // 
+            this.defaultCompression.Name = "defaultCompression";
+            this.defaultCompression.Size = new System.Drawing.Size(162, 22);
+            this.defaultCompression.Text = "&3 Default";
+            this.defaultCompression.Click += new System.EventHandler(this.defaultCompression_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -266,6 +324,7 @@
             this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 27);
             this.splitContainer1.Name = "splitContainer1";
             // 
@@ -279,7 +338,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.tcPreview);
             this.splitContainer1.Panel2.Controls.Add(this.lblPreview);
             this.splitContainer1.Size = new System.Drawing.Size(810, 616);
-            this.splitContainer1.SplitterDistance = 269;
+            this.splitContainer1.SplitterDistance = 240;
             this.splitContainer1.TabIndex = 4;
             // 
             // tbInfo
@@ -292,7 +351,7 @@
             this.tbInfo.Name = "tbInfo";
             this.tbInfo.ReadOnly = true;
             this.tbInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbInfo.Size = new System.Drawing.Size(528, 164);
+            this.tbInfo.Size = new System.Drawing.Size(557, 164);
             this.tbInfo.TabIndex = 7;
             // 
             // tcPreview
@@ -306,7 +365,7 @@
             this.tcPreview.Location = new System.Drawing.Point(2, 173);
             this.tcPreview.Name = "tcPreview";
             this.tcPreview.SelectedIndex = 0;
-            this.tcPreview.Size = new System.Drawing.Size(532, 440);
+            this.tcPreview.Size = new System.Drawing.Size(561, 440);
             this.tcPreview.TabIndex = 5;
             // 
             // tpRaw
@@ -314,7 +373,7 @@
             this.tpRaw.Controls.Add(this.tbRaw);
             this.tpRaw.Location = new System.Drawing.Point(4, 22);
             this.tpRaw.Name = "tpRaw";
-            this.tpRaw.Size = new System.Drawing.Size(524, 414);
+            this.tpRaw.Size = new System.Drawing.Size(553, 414);
             this.tpRaw.TabIndex = 1;
             this.tpRaw.Text = "Raw Data";
             // 
@@ -327,7 +386,7 @@
             this.tbRaw.Name = "tbRaw";
             this.tbRaw.ReadOnly = true;
             this.tbRaw.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbRaw.Size = new System.Drawing.Size(524, 414);
+            this.tbRaw.Size = new System.Drawing.Size(553, 414);
             this.tbRaw.TabIndex = 5;
             // 
             // tpAscii
@@ -335,7 +394,7 @@
             this.tpAscii.Controls.Add(this.tbAscii);
             this.tpAscii.Location = new System.Drawing.Point(4, 22);
             this.tpAscii.Name = "tpAscii";
-            this.tpAscii.Size = new System.Drawing.Size(524, 414);
+            this.tpAscii.Size = new System.Drawing.Size(553, 414);
             this.tpAscii.TabIndex = 3;
             this.tpAscii.Text = "Ascii Content";
             // 
@@ -348,7 +407,7 @@
             this.tbAscii.Name = "tbAscii";
             this.tbAscii.ReadOnly = true;
             this.tbAscii.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbAscii.Size = new System.Drawing.Size(524, 414);
+            this.tbAscii.Size = new System.Drawing.Size(553, 414);
             this.tbAscii.TabIndex = 7;
             // 
             // tpImage
@@ -356,19 +415,35 @@
             this.tpImage.Controls.Add(this.pbPreview);
             this.tpImage.Location = new System.Drawing.Point(4, 22);
             this.tpImage.Name = "tpImage";
-            this.tpImage.Size = new System.Drawing.Size(524, 414);
+            this.tpImage.Size = new System.Drawing.Size(553, 414);
             this.tpImage.TabIndex = 4;
-            this.tpImage.Text = "Image Content (coming soon)";
+            this.tpImage.Text = "Image Content";
             this.tpImage.UseVisualStyleBackColor = true;
             // 
             // pbPreview
             // 
+            this.pbPreview.ContextMenuStrip = this.cmsSavePreview;
             this.pbPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbPreview.Image = null;
             this.pbPreview.Location = new System.Drawing.Point(0, 0);
             this.pbPreview.Name = "pbPreview";
-            this.pbPreview.Size = new System.Drawing.Size(524, 414);
+            this.pbPreview.Size = new System.Drawing.Size(553, 414);
             this.pbPreview.TabIndex = 0;
             this.pbPreview.TabStop = false;
+            // 
+            // cmsSavePreview
+            // 
+            this.cmsSavePreview.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.saveAsToolStripMenuItem});
+            this.cmsSavePreview.Name = "cmsSavePreview";
+            this.cmsSavePreview.Size = new System.Drawing.Size(124, 26);
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
+            this.saveAsToolStripMenuItem.Text = "Save As...";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // lblPreview
             // 
@@ -386,35 +461,33 @@
             this.exportToolStripMenuItem,
             this.playToolStripMenuItem});
             this.cmsNode.Name = "cmsNode";
-            this.cmsNode.Size = new System.Drawing.Size(118, 92);
-            this.cmsNode.Opening += new System.ComponentModel.CancelEventHandler(this.cmsNode_Opening);
+            this.cmsNode.Size = new System.Drawing.Size(153, 114);
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.renameToolStripMenuItem.Text = "&Rename";
             // 
             // previewToolStripMenuItem
             // 
             this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
-            this.previewToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.previewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.previewToolStripMenuItem.Text = "&Preview";
             this.previewToolStripMenuItem.Click += new System.EventHandler(this.previewToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exportToolStripMenuItem.Text = "&Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // playToolStripMenuItem
             // 
             this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.playToolStripMenuItem.Text = "&Play";
-            this.playToolStripMenuItem.Click += new System.EventHandler(this.playToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -444,6 +517,7 @@
             this.tpAscii.PerformLayout();
             this.tpImage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbPreview)).EndInit();
+            this.cmsSavePreview.ResumeLayout(false);
             this.cmsNode.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -487,8 +561,16 @@
         private System.Windows.Forms.TabPage tpAscii;
         private System.Windows.Forms.TextBox tbAscii;
         private System.Windows.Forms.TabPage tpImage;
-        private System.Windows.Forms.PictureBox pbPreview;
+        private ZoomBox pbPreview;
         private System.Windows.Forms.TextBox tbInfo;
+        private System.Windows.Forms.ToolStripMenuItem byCompressionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem noCompression;
+        private System.Windows.Forms.ToolStripMenuItem maximumCompression;
+        private System.Windows.Forms.ToolStripMenuItem unknownCompression;
+        private System.Windows.Forms.ToolStripMenuItem defaultCompression;
+        private System.Windows.Forms.ToolStripMenuItem allCompressionTypes;
+        private System.Windows.Forms.ContextMenuStrip cmsSavePreview;
+        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
     }
 }
 

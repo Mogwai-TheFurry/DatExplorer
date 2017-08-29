@@ -24,7 +24,7 @@ namespace Mogwai.DDO.Explorer.UI
         private void btnOk_Click(object sender, EventArgs e)
         {
             SelectedDate = datePicker.Value;
-            SelectedOption = ((dynamic)(DateFilterOptions)cbOption.SelectedItem).Key;
+            SelectedOption = (DateFilterOptions)((dynamic)cbOption.SelectedItem).Key;
             this.Close();
         }
 
@@ -39,6 +39,8 @@ namespace Mogwai.DDO.Explorer.UI
                 .Cast<DateFilterOptions>()
                 .Select(p => new { Key = (int)p, Value = EnumHelpers.GetEnumDescription(p) })
                 .ToList();
+            cbOption.ValueMember = "Key";
+            cbOption.DisplayMember = "Value";
             cbOption.SelectedIndex = 0;
         }
     }

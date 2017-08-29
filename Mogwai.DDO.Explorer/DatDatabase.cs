@@ -20,6 +20,8 @@ namespace Mogwai.DDO.Explorer
         private uint _lastFreeBlock = 0;
         private uint _fileVersion = 0;
         private uint _freeBlockCount = 0;
+        private uint _datpackEngine = 0;
+        private uint _gameId = 0;
 
         private uint _magicNumber = 0;
 
@@ -31,16 +33,24 @@ namespace Mogwai.DDO.Explorer
             using (var dr = new DatReader(_filename))
             {
                 dr.Seek(_offset);
-                _magicNumber = dr.ReadUInt32();
-                _blockSize = dr.ReadUInt32();
-                _fileSize = dr.ReadUInt32();
-                _fileVersion = dr.ReadUInt32();
-                dr.ReadUInt32(); // unknown
-                _firstFreeBlock = dr.ReadUInt32(); // guess?
-                _lastFreeBlock = dr.ReadUInt32();
-                _freeBlockCount = dr.ReadUInt32();
-                _rootOffset = dr.ReadUInt32();
-                
+                _magicNumber = dr.ReadUInt32();  // 0x0140
+                _blockSize = dr.ReadUInt32();  // 0x0144
+                _fileSize = dr.ReadUInt32(); // 0x0148
+                _fileVersion = dr.ReadUInt32();  // 0x014C
+                dr.ReadUInt32(); // unknown, 0x0150
+                _firstFreeBlock = dr.ReadUInt32(); // guess?  0x0154
+                _lastFreeBlock = dr.ReadUInt32(); // 0x0158
+                _freeBlockCount = dr.ReadUInt32();  // 0x015C
+                _rootOffset = dr.ReadUInt32(); // 0x0160
+
+                dr.ReadUInt32(); // unknown, all 0s, 0x0164
+                dr.ReadUInt32(); // unknown, all 0s, 0x0168
+                dr.ReadUInt32(); // unknown, all 0s, 0x016C
+                dr.ReadUInt32(); // unknown, all 0s, 0x0170
+
+                _datpackEngine = dr.ReadUInt32(); // "datpack version engine" - from dndclient.log, 0x0174
+                _gameId = dr.ReadUInt32(); // "datpack version game" - from dndclient.log, 0x0178
+
                 _rootDirectory = new DatDirectory(_rootOffset, _blockSize, dr, this.AllFiles);
             }
         }
@@ -56,15 +66,22 @@ namespace Mogwai.DDO.Explorer
 
         public byte[] GetData(uint offset, int length)
         {
-            byte[] buffer = new byte[length];
-
-            using (var dr = new DatReader(_filename))
+            try
             {
-                dr.Seek(offset, SeekOrigin.Begin);
-                dr.Read(buffer, 0, length);
-            }
+                byte[] buffer = new byte[length];
 
-            return buffer;
+                using (var dr = new DatReader(_filename))
+                {
+                    dr.Seek(offset, SeekOrigin.Begin);
+                    dr.Read(buffer, 0, length);
+                }
+
+                return buffer;
+            }
+            catch (OutOfMemoryException)
+            {
+                return System.Text.ASCIIEncoding.ASCII.GetBytes("Not enough memory.");
+            }
         }
     }
 }

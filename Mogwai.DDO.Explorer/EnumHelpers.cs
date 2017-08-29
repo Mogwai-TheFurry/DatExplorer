@@ -39,7 +39,7 @@ namespace Mogwai.DDO.Explorer
                 attributes.Length > 0)
                 return attributes[0].FileExtension;
             else
-                return value.ToString();
+                return "bin";
         }
     }
 }
