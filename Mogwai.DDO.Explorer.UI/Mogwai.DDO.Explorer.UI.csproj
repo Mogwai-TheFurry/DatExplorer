@@ -89,6 +89,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScrollApis.cs" />
+    <Compile Include="TreeSortOption.cs" />
     <Compile Include="ZoomBox.cs">
       <SubType>Component</SubType>
     </Compile>

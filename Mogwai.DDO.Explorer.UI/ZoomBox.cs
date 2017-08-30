@@ -67,7 +67,7 @@ namespace Mogwai.DDO.Explorer.UI
         private void ZoomScroll(Point location, bool zoomIn)
         {
             // make zoom-point (cursor location) our origin
-            _previewTransform.Translate(-location.X, -location.Y);
+            // _previewTransform.Translate(-location.X, -location.Y);
 
             // perform zoom (at origin)
             if (zoomIn)
@@ -76,7 +76,7 @@ namespace Mogwai.DDO.Explorer.UI
                 _previewTransform.Scale(1 / _zoomFactor, 1 / _zoomFactor);
 
             // translate origin back to cursor
-            _previewTransform.Translate(location.X, location.Y);
+            // _previewTransform.Translate(location.X, location.Y);
 
             Invalidate();
         }

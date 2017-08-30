@@ -21,6 +21,8 @@ namespace Mogwai.DDO.Explorer.UI
 
         private DateTime? _dateFilter = null;
         private DateFilterOptions? _dateFilterOptions = null;
+
+        private TreeSortOption _sort = TreeSortOption.FileId;
         
         public Form1()
         {
@@ -66,6 +68,7 @@ namespace Mogwai.DDO.Explorer.UI
             this.Text = "Dat Explorer - " + Path.GetFileName(_database.FileName);
 
             Dictionary<byte, TreeNode> rootNodes = new Dictionary<byte, TreeNode>();
+            Dictionary<byte, List<TreeNode>> orderedNodes = new Dictionary<byte, List<TreeNode>>();
 
             for (int i = 0; i < _database.AllFiles.Count; i++)
             {
@@ -82,17 +85,13 @@ namespace Mogwai.DDO.Explorer.UI
                     continue;
 
                 byte idSegment = (byte)(df.FileId >> 24);
-                TreeNode parentNode = null;
 
                 if (!rootNodes.ContainsKey(idSegment))
                 {
-                    parentNode = new TreeNode("0x" + idSegment.ToString("X2"));
-                    tvDatViewer.Nodes.Add(parentNode);
+                    TreeNode parentNode = new TreeNode("0x" + idSegment.ToString("X2"));
+                    // tvDatViewer.Nodes.Add(parentNode);
                     rootNodes.Add(idSegment, parentNode);
-                }
-                else
-                {
-                    parentNode = rootNodes[idSegment];
+                    orderedNodes.Add(idSegment, new List<TreeNode>());
                 }
 
                 TreeNode thisNode = new TreeNode(df.FileId.ToString("X8"));
@@ -113,13 +112,32 @@ namespace Mogwai.DDO.Explorer.UI
                 thisNode.Nodes.Add("Unknown 2: 0x" + df.Unknown2.ToString("X8"));
                 thisNode.ContextMenuStrip = cmsNode;
 
-
-                // TODO: implement sorting
-                parentNode.Nodes.Add(thisNode);
+                orderedNodes[idSegment].Add(thisNode);
                 tsProgress.Value++;
 
                 tsProgress.Text = $"Creating tree structure... ({tsProgress.Value} of {_database.AllFiles.Count})";
-                // Application.DoEvents();
+            }
+
+            foreach(var kvp in rootNodes)
+            {
+                List<TreeNode> sorted;
+                
+                switch (_sort)
+                {
+                    case TreeSortOption.FileDateAsc:
+                        sorted = orderedNodes[kvp.Key].OrderBy(tn => (tn.Tag as DatFile).FileDate).ToList();
+                        break;
+                    case TreeSortOption.FileDateDesc:
+                        sorted = orderedNodes[kvp.Key].OrderByDescending(tn => (tn.Tag as DatFile).FileDate).ToList();
+                        break;
+                    case TreeSortOption.FileId:
+                    default:
+                        sorted = orderedNodes[kvp.Key].OrderBy(tn => tn.Text).ToList();
+                        break;
+                }
+
+                sorted.ForEach(tn => kvp.Value.Nodes.Add(tn));
+                tvDatViewer.Nodes.Add(kvp.Value);
             }
 
             tsProgress.Visible = false;
@@ -438,6 +456,31 @@ namespace Mogwai.DDO.Explorer.UI
                 if (save == DialogResult.OK)
                     pbPreview.Image.Save(sfd.FileName);
             }
+        }
+
+        private void fileDateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetSort(TreeSortOption.FileDateAsc);
+        }
+
+        private void fileDateDescToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetSort(TreeSortOption.FileDateDesc);
+        }
+
+        private void fileIdToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetSort(TreeSortOption.FileId);
+        }
+
+        private void SetSort(TreeSortOption sort)
+        {
+            _sort = sort;
+            fileIdToolStripMenuItem.Checked = (_sort == TreeSortOption.FileId);
+            fileDateDescToolStripMenuItem.Checked = (_sort == TreeSortOption.FileDateDesc);
+            fileDateToolStripMenuItem.Checked = (_sort == TreeSortOption.FileDateAsc);
+
+            LoadTree();
         }
     }
 }

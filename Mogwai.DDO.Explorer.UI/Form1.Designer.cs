@@ -74,6 +74,10 @@
             this.previewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.playToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sortToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileDateDescToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             this.mainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -122,6 +126,7 @@
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiFile,
             this.searchToolStripMenuItem,
+            this.sortToolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
@@ -292,6 +297,7 @@
             this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.autoDecompressToolStripMenuItem,
             this.autoDetectContentTypeToolStripMenuItem});
+            this.optionsToolStripMenuItem.Enabled = false;
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "Options";
@@ -461,33 +467,66 @@
             this.exportToolStripMenuItem,
             this.playToolStripMenuItem});
             this.cmsNode.Name = "cmsNode";
-            this.cmsNode.Size = new System.Drawing.Size(153, 114);
+            this.cmsNode.Size = new System.Drawing.Size(118, 92);
             // 
             // renameToolStripMenuItem
             // 
             this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-            this.renameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.renameToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.renameToolStripMenuItem.Text = "&Rename";
             // 
             // previewToolStripMenuItem
             // 
             this.previewToolStripMenuItem.Name = "previewToolStripMenuItem";
-            this.previewToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.previewToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.previewToolStripMenuItem.Text = "&Preview";
             this.previewToolStripMenuItem.Click += new System.EventHandler(this.previewToolStripMenuItem_Click);
             // 
             // exportToolStripMenuItem
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.exportToolStripMenuItem.Text = "&Export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // playToolStripMenuItem
             // 
             this.playToolStripMenuItem.Name = "playToolStripMenuItem";
-            this.playToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.playToolStripMenuItem.Size = new System.Drawing.Size(117, 22);
             this.playToolStripMenuItem.Text = "&Play";
+            // 
+            // sortToolStripMenuItem
+            // 
+            this.sortToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileIdToolStripMenuItem,
+            this.fileDateToolStripMenuItem,
+            this.fileDateDescToolStripMenuItem});
+            this.sortToolStripMenuItem.Name = "sortToolStripMenuItem";
+            this.sortToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.sortToolStripMenuItem.Text = "Sort By...";
+            // 
+            // fileIdToolStripMenuItem
+            // 
+            this.fileIdToolStripMenuItem.Checked = true;
+            this.fileIdToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fileIdToolStripMenuItem.Name = "fileIdToolStripMenuItem";
+            this.fileIdToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fileIdToolStripMenuItem.Text = "File &Id";
+            this.fileIdToolStripMenuItem.Click += new System.EventHandler(this.fileIdToolStripMenuItem_Click);
+            // 
+            // fileDateToolStripMenuItem
+            // 
+            this.fileDateToolStripMenuItem.Name = "fileDateToolStripMenuItem";
+            this.fileDateToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fileDateToolStripMenuItem.Text = "File Date &Asc";
+            this.fileDateToolStripMenuItem.Click += new System.EventHandler(this.fileDateToolStripMenuItem_Click);
+            // 
+            // fileDateDescToolStripMenuItem
+            // 
+            this.fileDateDescToolStripMenuItem.Name = "fileDateDescToolStripMenuItem";
+            this.fileDateDescToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fileDateDescToolStripMenuItem.Text = "File Date &Desc";
+            this.fileDateDescToolStripMenuItem.Click += new System.EventHandler(this.fileDateDescToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -571,6 +610,10 @@
         private System.Windows.Forms.ToolStripMenuItem allCompressionTypes;
         private System.Windows.Forms.ContextMenuStrip cmsSavePreview;
         private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sortToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileIdToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileDateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fileDateDescToolStripMenuItem;
     }
 }
 
